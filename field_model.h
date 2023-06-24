@@ -1,28 +1,43 @@
 #ifndef FIELD_MODEL_H
 #define FIELD_MODEL_H
 
+#include "qabstractitemmodel.h"
 #include <vector>
 #include <cassert>
 #include <algorithm>
 #include <utility>
 
-struct GameField {
+struct GameField : public QAbstractTableModel {
 public:
-    GameField(size_t width, size_t height) : width(width), height(height), field(std::vector<int>(width*height, 0)) {}
+    GameField(QObject *parent, size_t width, size_t height) : parent(parent), width(width), height(height), field(std::vector<int>(width*height, 0)) {}
+    GameField() : GameField(nullptr, 3, 3) {};
     size_t set(size_t r, size_t c, size_t val) {
-        assert((val == 1) || (val ==0) );
+        assert((val == 1) || (val == 0) );
         field.at(r*this->width + c) = val;
         return 0;
     }
 
-    size_t get(size_t r, size_t c) {
-        return field.at(r*this->width + c);
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override {
+        return height;
     }
 
-    std::pair<size_t, size_t> get_limits() const {
-        return std::make_pair(width, height);
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override {
+        return width;
     }
 
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override {
+        if ((index.row() >= height) || (index.column() >= width) ) {
+            return QVariant();
+        } else {
+            return field.at(index.row()*width + index.column());
+        }
+    }
+
+    Qt::ItemFlags flags(const QModelIndex &index) const override {
+        return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    }
+
+private:
     size_t switch_cell(size_t r, size_t c) {
         return field.at(r*width + c) ^ 1;
     }
@@ -35,9 +50,9 @@ public:
         }
     }
 
-private:
     size_t width, height;
     std::vector<int> field;
+    QObject *parent;
 };
 
 #endif // FIELD_MODEL_H
