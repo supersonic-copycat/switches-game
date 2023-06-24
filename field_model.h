@@ -10,7 +10,7 @@
 struct GameField : public QAbstractTableModel {
         Q_OBJECT
 public:
-    GameField(QObject *parent, size_t width, size_t height) : QAbstractTableModel(parent), width(width), height(height), field(std::vector<int>(width*height, 0)) {}
+        GameField(QObject *parent, size_t width, size_t height) : QAbstractTableModel(parent), width(width), height(height), isPlaying(1), field(std::vector<int>(width*height, 0)) {}
     GameField() : GameField(nullptr, 3, 3) {};
     size_t set(size_t r, size_t c, size_t val) {
         assert((val == 1) || (val == 0) );
@@ -27,7 +27,7 @@ public:
     }
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override {
-        if ((index.row() >= height) || (index.column() >= width) ) {
+        if ((index.row() >= height) || (index.column() >= width) || (role != Qt::DisplayRole) ) {
             return QVariant();
         } else {
             return field.at(index.row()*width + index.column());
@@ -37,22 +37,32 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const override {
         return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     }
-
+public slots:
+    void switch_cell(const QModelIndex &idx) {
+        beginResetModel();
+        if (isPlaying) {
+        _switch_cells(idx.row(), idx.column());
+        } else {
+        _switch_cell(idx.row(), idx.column());
+        }
+        endResetModel();
+    }
 private:
-    size_t switch_cell(size_t r, size_t c) {
-        return field.at(r*width + c) ^ 1;
+    void _switch_cell(size_t r, size_t c) {
+        field.at(r*width + c) ^= 1;
     }
 
-    void switch_cells(size_t r, size_t c) {
+    void _switch_cells(size_t r, size_t c) {
         for (size_t i = std::clamp<size_t>(r - 1, 0, height); i <= std::clamp<size_t>(r+1, 0, height); ++i) {
             for (size_t j = std::clamp<size_t>(c - 1, 0, width); j <= std::clamp<size_t>(c+1, 0, width); ++j) {
-                switch_cell(i, j);
+                _switch_cell(i, j);
             }
         }
     }
 
     size_t width, height;
     std::vector<int> field;
+    bool isPlaying;
 };
 
 #endif // FIELD_MODEL_H
