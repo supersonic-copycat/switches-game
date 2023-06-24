@@ -41,9 +41,9 @@ public slots:
     void switch_cell(const QModelIndex &idx) {
         beginResetModel();
         if (isPlaying) {
-        _switch_cells(idx.row(), idx.column());
+            _switch_cells(idx.row(), idx.column());
         } else {
-        _switch_cell(idx.row(), idx.column());
+            _switch_cell(idx.row(), idx.column());
         }
         endResetModel();
     }
@@ -53,10 +53,18 @@ private:
     }
 
     void _switch_cells(size_t r, size_t c) {
-        for (size_t i = std::clamp<size_t>(r - 1, 0, height); i <= std::clamp<size_t>(r+1, 0, height); ++i) {
-            for (size_t j = std::clamp<size_t>(c - 1, 0, width); j <= std::clamp<size_t>(c+1, 0, width); ++j) {
-                _switch_cell(i, j);
-            }
+        _switch_cell(r, c);
+        if (r > 0) {
+            _switch_cell(r-1, c);
+        }
+        if (r < height -1) {
+            _switch_cell(r+1, c);
+        }
+        if (c > 0) {
+            _switch_cell(r, c-1);
+        }
+        if (c < height -1) {
+            _switch_cell(r, c+1);
         }
     }
 
