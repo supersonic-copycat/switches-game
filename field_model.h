@@ -8,8 +8,9 @@
 #include <utility>
 
 struct GameField : public QAbstractTableModel {
+        Q_OBJECT
 public:
-    GameField(QObject *parent, size_t width, size_t height) : parent(parent), width(width), height(height), field(std::vector<int>(width*height, 0)) {}
+    GameField(QObject *parent, size_t width, size_t height) : QAbstractTableModel(parent), width(width), height(height), field(std::vector<int>(width*height, 0)) {}
     GameField() : GameField(nullptr, 3, 3) {};
     size_t set(size_t r, size_t c, size_t val) {
         assert((val == 1) || (val == 0) );
@@ -52,7 +53,6 @@ private:
 
     size_t width, height;
     std::vector<int> field;
-    QObject *parent;
 };
 
 #endif // FIELD_MODEL_H
