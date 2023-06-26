@@ -38,6 +38,10 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const override {
         return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     }
+
+    void set_mode(bool mode) {
+        isPlaying = mode;
+    }
 public slots:
     void switch_cell(const QModelIndex &idx) {
         beginResetModel();
@@ -50,15 +54,6 @@ public slots:
     }
     // dumb way to get current state -- id is known to QButtonGroup
     // so passing here &QAbstractButton isn't an option
-    void set_mode(QAbstractButton &b) {
-        if (b.objectName().toStdString() == "rb_setup") {
-            isPlaying = 0;
-        } if (b.objectName().toStdString() == "rb_game") {
-            isPlaying = 1;
-        }else {
-        }
-    }
-
 private:
     void _switch_cell(size_t r, size_t c) {
         field.at(r*width + c) ^= 1;
