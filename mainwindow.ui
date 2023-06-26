@@ -118,6 +118,9 @@
         <property name="text">
          <string>Настройка</string>
         </property>
+        <attribute name="buttonGroup">
+         <string notr="true">rbs_mode</string>
+        </attribute>
        </widget>
        <widget class="QRadioButton" name="rb_game">
         <property name="geometry">
@@ -131,6 +134,9 @@
         <property name="text">
          <string>Игра</string>
         </property>
+        <attribute name="buttonGroup">
+         <string notr="true">rbs_mode</string>
+        </attribute>
        </widget>
       </widget>
      </item>
@@ -151,4 +157,7 @@
  </widget>
  <resources/>
  <connections/>
+ <buttongroups>
+  <buttongroup name="rbs_mode"/>
+ </buttongroups>
 </ui>

@@ -1,6 +1,7 @@
 #ifndef FIELD_MODEL_H
 #define FIELD_MODEL_H
 
+#include "qabstractbutton.h"
 #include "qabstractitemmodel.h"
 #include <vector>
 #include <cassert>
@@ -10,7 +11,7 @@
 struct GameField : public QAbstractTableModel {
         Q_OBJECT
 public:
-        GameField(QObject *parent, size_t width, size_t height) : QAbstractTableModel(parent), width(width), height(height), isPlaying(1), field(std::vector<int>(width*height, 0)) {}
+        GameField(QObject *parent, size_t width, size_t height) : QAbstractTableModel(parent), width(width), height(height), isPlaying(0), field(std::vector<int>(width*height, 0)) {}
     GameField() : GameField(nullptr, 3, 3) {};
     size_t set(size_t r, size_t c, size_t val) {
         assert((val == 1) || (val == 0) );
@@ -47,6 +48,17 @@ public slots:
         }
         endResetModel();
     }
+    // dumb way to get current state -- id is known to QButtonGroup
+    // so passing here &QAbstractButton isn't an option
+    void set_mode(QAbstractButton &b) {
+        if (b.objectName().toStdString() == "rb_setup") {
+            isPlaying = 0;
+        } if (b.objectName().toStdString() == "rb_game") {
+            isPlaying = 1;
+        }else {
+        }
+    }
+
 private:
     void _switch_cell(size_t r, size_t c) {
         field.at(r*width + c) ^= 1;
