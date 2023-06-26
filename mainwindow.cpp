@@ -24,6 +24,8 @@ MainWindow::MainWindow(QWidget *parent)
         }
     });
     ui->rb_game->setChecked(1);
+    ui->tableView->horizontalHeader()->setVisible(0);
+    ui->tableView->verticalHeader()->setVisible(0);
 
 }
 
