@@ -13,11 +13,6 @@ struct GameField : public QAbstractTableModel {
 public:
         GameField(QObject *parent, size_t width, size_t height) : QAbstractTableModel(parent), width(width), height(height), isPlaying(0), field(std::vector<int>(width*height, 0)) {}
     GameField() : GameField(nullptr, 3, 3) {};
-    size_t set(size_t r, size_t c, size_t val) {
-        assert((val == 1) || (val == 0) );
-        field.at(r*this->width + c) = val;
-        return 0;
-    }
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override {
         return height;
